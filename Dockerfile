@@ -37,6 +37,10 @@ RUN mkdir -p vector_store sqlite_db
 # 暴露 FastAPI 服务端口
 EXPOSE 8000
 
+# 健康检查：服务启动后每 30 秒检查一次 /health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)" || exit 1
+
 # 启动脚本：负责自动入库 + 启动服务
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh

@@ -147,21 +147,30 @@ knowledge-qa-agent/
 
 ## Docker 部署（可选）
 
-项目已提供 `Dockerfile` 和 `docker-compose.yml`，适合在服务器或本地 Docker 环境一键拉起。
+项目已提供 `Dockerfile` 和 `docker-compose.yml`，可在 Windows（WSL2 后端）、Linux、macOS 上一键拉起。
 
-> 注意：当前开发机未安装 Docker/WSL，Docker 文件已按规范编写但未实际构建运行，推到 GitHub 后可在支持 Docker 的环境验证。
+### 前置条件
+
+- 安装 Docker Desktop（Windows 11 推荐使用 WSL2 后端）
+- 验证命令可用：`docker --version` 和 `docker compose version`
 
 ### 使用 docker-compose（推荐）
 
 ```bash
-# 1. 复制环境变量并填入 DeepSeek API Key
+# 1. 复制环境变量并填入 API Key
 cp .env.example .env
-# 编辑 .env，填入 DEEPSEEK_API_KEY
+# 编辑 .env，填入 LLM_API_KEY（默认 DeepSeek，也可切换 Moonshot/火山/OpenAI）
 
-# 2. 构建并启动
+# 2. 构建并后台启动
 docker-compose up --build -d
 
-# 3. 测试
+# 3. 查看启动日志（首次启动会预下载模型并入库，约 1-5 分钟）
+docker-compose logs -f
+
+# 4. 测试
+# 健康检查
+curl http://127.0.0.1:8000/health
+
 # 语义检索
 curl -X POST http://127.0.0.1:8000/query -H "Content-Type: application/json" -d '{"question": "员工出差住宿标准是多少"}'
 
@@ -173,8 +182,9 @@ curl -X POST http://127.0.0.1:8000/query -H "Content-Type: application/json" -d 
 
 - **镜像内预下载 Embedding 模型**：构建时就把 `BAAI/bge-small-zh-v1.5` 下载到 `/root/.cache/fastembed`，避免容器首次启动时联网下载，做到开箱即用。
 - **数据持久化**：`vector_store/` 和 `sqlite_db/` 通过 `volumes` 挂载到宿主机，重建容器不会丢失已生成的向量库和数据库。
-- **自动入库**：`docker-entrypoint.sh` 在启动服务前自动执行 `ingest_demo.py` 和 `ingest_tables.py`，可通过环境变量 `AUTO_INGEST=false` 关闭。
+- **自动入库（幂等）**：`docker-entrypoint.sh` 在启动服务前检查 `vector_store/` 和 `sqlite_db/` 是否为空；仅在首次启动时自动执行 `ingest_demo.py` 和 `ingest_tables.py`，避免每次重启都清空重建。可通过环境变量 `AUTO_INGEST=false` 关闭。
 - **密钥安全**：`.env` 通过 `env_file` 挂载，不会进入镜像层；`.dockerignore` 已排除 `.env`。
+- **健康检查**：Dockerfile 内置 `HEALTHCHECK`，容器运行后可自动检测服务健康状态。
 
 ## 切换大模型
 

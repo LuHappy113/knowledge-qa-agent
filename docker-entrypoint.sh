@@ -5,11 +5,21 @@ set -e
 AUTO_INGEST=${AUTO_INGEST:-true}
 
 if [ "$AUTO_INGEST" = "true" ]; then
-    echo "==> 正在初始化向量库..."
-    python scripts/ingest_demo.py
+    # 仅在向量库为空时执行入库，避免每次重启都清空重建
+    if [ ! -f "${STORE_DIR}/embeddings.npy" ] || [ ! -s "${STORE_DIR}/embeddings.npy" ]; then
+        echo "==> 向量库为空，正在初始化向量库..."
+        python scripts/ingest_demo.py
+    else
+        echo "==> 向量库已存在，跳过向量入库（如需重建请删除 ${STORE_DIR} 后重启）"
+    fi
 
-    echo "==> 正在初始化 SQLite 结构化数据..."
-    python scripts/ingest_tables.py
+    # SQLite 同理：只有数据库文件不存在或为空时才重新导入
+    if [ ! -f "${SQLITE_PATH}" ] || [ ! -s "${SQLITE_PATH}" ]; then
+        echo "==> SQLite 数据库为空，正在初始化结构化数据..."
+        python scripts/ingest_tables.py
+    else
+        echo "==> SQLite 数据库已存在，跳过结构化数据导入"
+    fi
 fi
 
 echo "==> 启动 FastAPI 服务..."
