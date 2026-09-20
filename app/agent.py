@@ -1,6 +1,6 @@
 """Agent 循环（核心）：大模型用 function calling 自主决定调哪个工具。
 
-流程：把「问题 + 工具说明书」发给 DeepSeek → 模型返回"要调工具/直接答"的决策
+流程：把「问题 + 工具说明书」发给大模型 → 模型返回"要调工具/直接答"的决策
 → 若要调工具，代码执行并把结果回传 → 再问模型，直到它给出最终答案或达到最大轮数。
 """
 import json
@@ -99,7 +99,7 @@ def _execute_tool(name, args):
 
 
 def _client():
-    return OpenAI(api_key=config.DEEPSEEK_API_KEY, base_url=config.DEEPSEEK_BASE_URL)
+    return OpenAI(api_key=config.LLM_API_KEY, base_url=config.LLM_BASE_URL)
 
 
 def _call_llm(messages, tools=None):
@@ -113,7 +113,7 @@ def _call_llm(messages, tools=None):
     for _ in range(3):
         try:
             return client.chat.completions.create(
-                model=config.DEEPSEEK_MODEL,
+                model=config.LLM_MODEL,
                 messages=messages,
                 **kwargs,
             )

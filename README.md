@@ -44,7 +44,7 @@
 | 层 | 选择 | 理由 |
 |---|---|---|
 | Web 框架 | FastAPI + uvicorn | 轻量、自带 `/docs` 交互文档 |
-| 大模型 | DeepSeek（OpenAI 兼容接口） | 便宜、function calling 成熟 |
+| 大模型 | Moonshot Kimi-2.7（OpenAI 兼容接口） | function calling 成熟，长文本能力强 |
 | Embedding | fastembed + `bge-small-zh-v1.5` | 本地 ONNX 推理，无需 GPU |
 | 向量检索 | numpy 手写余弦相似度 | 小体量够用，实现透明、易于理解 |
 | 结构化查询 | SQLite（内置）+ csv | 零部署 |
@@ -74,7 +74,7 @@
 python -m venv .venv            # 首次运行才需要，之后可跳过
 .venv\Scripts\activate          # Windows
 pip install -r requirements.txt
-copy .env.example .env          # 填入你的 DeepSeek API Key
+copy .env.example .env          # 填入你的 Moonshot API Key
 ```
 
 ### 2. 入库

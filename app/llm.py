@@ -1,10 +1,10 @@
-"""调用大模型（DeepSeek，OpenAI 兼容接口）。"""
+"""调用大模型（OpenAI 兼容接口，默认 Moonshot/Kimi）。"""
 from openai import OpenAI
 from app import config
 
 
 def answer_with_context(question, context_chunks):
-    client = OpenAI(api_key=config.DEEPSEEK_API_KEY, base_url=config.DEEPSEEK_BASE_URL)
+    client = OpenAI(api_key=config.LLM_API_KEY, base_url=config.LLM_BASE_URL)
     context_text = "\n\n".join(
         f"[参考{i + 1}]\n{c}" for i, c in enumerate(context_chunks)
     )
@@ -16,7 +16,7 @@ def answer_with_context(question, context_chunks):
         "【回答】"
     )
     resp = client.chat.completions.create(
-        model=config.DEEPSEEK_MODEL,
+        model=config.LLM_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
     )
