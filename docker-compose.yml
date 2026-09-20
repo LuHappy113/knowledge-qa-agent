@@ -1,0 +1,18 @@
+services:
+  knowledge-qa-agent:
+    build: .
+    image: knowledge-qa-agent:latest
+    container_name: knowledge-qa-agent
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # 持久化向量库和 SQLite，避免容器重建后数据丢失
+      - ./vector_store:/app/vector_store
+      - ./sqlite_db:/app/sqlite_db
+    environment:
+      - STORE_DIR=./vector_store
+      - SQLITE_PATH=./sqlite_db/contacts.db
+      - AUTO_INGEST=true
+    restart: unless-stopped

@@ -1,0 +1,21 @@
+[
+  {"question": "员工出差住宿标准是多少？", "type": "vector", "expected": ["500", "400", "300"]},
+  {"question": "出差伙食补助每天多少钱？", "type": "vector", "expected": ["100"]},
+  {"question": "市内交通费每天能报销多少？", "type": "vector", "expected": ["80"]},
+  {"question": "报销需要在多少天内提交？", "type": "vector", "expected": ["工作日"]},
+  {"question": "员工年休假有多少天？", "type": "vector", "expected": ["5", "10", "15"]},
+  {"question": "病假期间工资怎么发？", "type": "vector", "expected": ["80"]},
+  {"question": "迟到早退会扣多少钱？", "type": "vector", "expected": ["200"]},
+  {"question": "产假多少天？", "type": "vector", "expected": ["158"]},
+  {"question": "公司有双休吗？", "type": "vector", "expected": ["双休"]},
+  {"question": "张伟的邮箱是多少？", "type": "sql", "expected": ["zhangwei@example.com"]},
+  {"question": "财务部有哪些人？", "type": "sql", "expected": ["张伟", "陈静", "吴敏"]},
+  {"question": "李娜在哪个部门？", "type": "sql", "expected": ["人力资源部"]},
+  {"question": "赵磊的职位是什么？", "type": "sql", "expected": ["前端工程师"]},
+  {"question": "技术部有几个人？", "type": "sql", "expected": ["3"]},
+  {"question": "公司明年的营收目标是多少？", "type": "refuse", "expected": []},
+  {"question": "老板的私人手机号是多少？", "type": "refuse", "expected": []},
+  {"question": "公司的股票代码是什么？", "type": "refuse", "expected": []},
+  {"question": "今天天气怎么样？", "type": "refuse", "expected": []},
+  {"question": "你好", "type": "chat", "expected": []}
+]

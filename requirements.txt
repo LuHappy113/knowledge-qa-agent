@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+onnxruntime==1.19.2
+fastembed
+openai
+python-dotenv
+pypdf
+openpyxl
