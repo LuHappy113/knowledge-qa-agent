@@ -7,8 +7,8 @@ load_dotenv()
 # 大模型：支持任意 OpenAI 兼容接口（DeepSeek、Moonshot/Kimi、OpenAI 等）
 # 旧变量名 DEEPSEEK_* 仍兼容读取，但推荐使用通用 LLM_* 变量
 LLM_API_KEY = os.getenv("LLM_API_KEY") or os.getenv("DEEPSEEK_API_KEY", "")
-LLM_BASE_URL = os.getenv("LLM_BASE_URL") or os.getenv("DEEPSEEK_BASE_URL", "https://api.moonshot.cn/v1")
-LLM_MODEL = os.getenv("LLM_MODEL") or os.getenv("DEEPSEEK_MODEL", "kimi-k2-7")
+LLM_BASE_URL = os.getenv("LLM_BASE_URL") or os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+LLM_MODEL = os.getenv("LLM_MODEL") or os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 
 # Embedding
 EMBED_MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-zh-v1.5")

@@ -44,7 +44,7 @@
 | 层 | 选择 | 理由 |
 |---|---|---|
 | Web 框架 | FastAPI + uvicorn | 轻量、自带 `/docs` 交互文档 |
-| 大模型 | Moonshot Kimi-2.7（OpenAI 兼容接口） | function calling 成熟，长文本能力强 |
+| 大模型 | DeepSeek（OpenAI 兼容接口） | 便宜、function calling 成熟；也可一键切换 Moonshot/Kimi/OpenAI |
 | Embedding | fastembed + `bge-small-zh-v1.5` | 本地 ONNX 推理，无需 GPU |
 | 向量检索 | numpy 手写余弦相似度 | 小体量够用，实现透明、易于理解 |
 | 结构化查询 | SQLite（内置）+ csv | 零部署 |
@@ -74,7 +74,7 @@
 python -m venv .venv            # 首次运行才需要，之后可跳过
 .venv\Scripts\activate          # Windows
 pip install -r requirements.txt
-copy .env.example .env          # 填入你的 Moonshot API Key
+copy .env.example .env          # 填入你的 DeepSeek API Key
 ```
 
 ### 2. 入库
@@ -177,6 +177,34 @@ curl -X POST http://127.0.0.1:8000/query -H "Content-Type: application/json" -d 
 - **数据持久化**：`vector_store/` 和 `sqlite_db/` 通过 `volumes` 挂载到宿主机，重建容器不会丢失已生成的向量库和数据库。
 - **自动入库**：`docker-entrypoint.sh` 在启动服务前自动执行 `ingest_demo.py` 和 `ingest_tables.py`，可通过环境变量 `AUTO_INGEST=false` 关闭。
 - **密钥安全**：`.env` 通过 `env_file` 挂载，不会进入镜像层；`.dockerignore` 已排除 `.env`。
+
+## 切换大模型
+
+项目使用 OpenAI 兼容接口调用大模型，因此可以一键切换到任何支持该协议的服务，只需改 `.env`：
+
+```env
+# DeepSeek（默认）
+LLM_API_KEY=sk-你的key
+LLM_BASE_URL=https://api.deepseek.com
+LLM_MODEL=deepseek-chat
+
+# Moonshot / Kimi
+LLM_API_KEY=sk-你的key
+LLM_BASE_URL=https://api.moonshot.cn/v1
+LLM_MODEL=kimi-k2-7
+
+# 火山引擎 Ark（需填推理接入点 ID）
+LLM_API_KEY=sark-你的key
+LLM_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+LLM_MODEL=ep-你的接入点ID
+
+# OpenAI
+LLM_API_KEY=sk-你的key
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-4o-mini
+```
+
+只要服务支持 `chat.completions` 和 `tools`（function calling），Agent 循环无需改代码。
 
 ## 为什么没用 LangChain
 
