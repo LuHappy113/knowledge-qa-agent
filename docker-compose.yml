@@ -15,4 +15,5 @@ services:
       - STORE_DIR=./vector_store
       - SQLITE_PATH=./sqlite_db/contacts.db
       - AUTO_INGEST=true
+      - HF_ENDPOINT=https://hf-mirror.com
     restart: unless-stopped

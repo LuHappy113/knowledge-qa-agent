@@ -4,6 +4,10 @@ set -e
 # 是否自动执行入库脚本（默认开启，可通过环境变量关闭）
 AUTO_INGEST=${AUTO_INGEST:-true}
 
+# 确保数据目录存在（volume 挂载空目录时也适用）
+mkdir -p "${STORE_DIR:-./vector_store}"
+mkdir -p "$(dirname "${SQLITE_PATH:-./sqlite_db/contacts.db}")"
+
 if [ "$AUTO_INGEST" = "true" ]; then
     # 仅在向量库为空时执行入库，避免每次重启都清空重建
     if [ ! -f "${STORE_DIR}/embeddings.npy" ] || [ ! -s "${STORE_DIR}/embeddings.npy" ]; then

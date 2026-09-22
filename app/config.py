@@ -14,13 +14,14 @@ LLM_MODEL = os.getenv("LLM_MODEL") or os.getenv("DEEPSEEK_MODEL", "deepseek-chat
 EMBED_MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-zh-v1.5")
 
 # 分块 / 检索
-CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "200"))
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "400"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "50"))
 TOP_N = int(os.getenv("TOP_N", "3"))
-# 相似度阈值：0.6 是用评估集扫出来的——噪声最高 0.4998、命中最低 0.5368，
-# 0.50~0.60 区间检索命中 9/9 且拒答 4/4 全满，取区间上沿偏保守（宁可不答不瞎答）。
-# 复现：python eval/tune_threshold.py
-SIM_THRESHOLD = float(os.getenv("SIM_THRESHOLD", "0.6"))
+# 相似度阈值：0.5 在制度条款与放假通知等场景中更均衡。
+# 评估集原始扫描结果（条款类）噪声最高 0.4998、命中最低 0.5368，但节日通知类
+# 短 query（如"国庆节时"）命中分数会落在 0.55~0.60 区间，0.6 会导致漏检。
+# 配合 retrieve.py 的关键词重排，可在放宽阈值的同时抑制不相关结果上浮。
+SIM_THRESHOLD = float(os.getenv("SIM_THRESHOLD", "0.5"))
 
 # 向量库（numpy 本地存储目录）
 STORE_DIR = os.getenv("STORE_DIR", "./vector_store")
@@ -29,4 +30,4 @@ STORE_DIR = os.getenv("STORE_DIR", "./vector_store")
 SQLITE_PATH = os.getenv("SQLITE_PATH", "./sqlite_db/contacts.db")
 
 # Agent 循环
-MAX_AGENT_ROUNDS = int(os.getenv("MAX_AGENT_ROUNDS", "5"))
+MAX_AGENT_ROUNDS = int(os.getenv("MAX_AGENT_ROUNDS", "3"))
